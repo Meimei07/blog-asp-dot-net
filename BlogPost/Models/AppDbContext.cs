@@ -9,5 +9,7 @@ namespace BlogPost.Models
             optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
             optionsBuilder.LogTo(Console.WriteLine, new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information);
         }
+
+        public DbSet<CategoryEntity> Categories {get;set;}
     }
 }
