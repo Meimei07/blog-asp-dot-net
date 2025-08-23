@@ -11,5 +11,6 @@ namespace BlogPost.Models
         }
 
         public DbSet<CategoryEntity> Categories {get;set;}
+        public DbSet<TagEntity> Tags {get;set;}
     }
 }
