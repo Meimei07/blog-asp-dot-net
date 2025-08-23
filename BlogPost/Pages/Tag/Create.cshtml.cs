@@ -11,7 +11,9 @@ namespace BlogPost.Pages.Tag
 
         public async Task<IActionResult> OnPost()
         {
-            if(ModelState.IsValid)
+            ModelState.Remove("Tag.Posts");
+
+            if (ModelState.IsValid)
             {
                 _db.Tags.Add(Tag);
                 await _db.SaveChangesAsync();

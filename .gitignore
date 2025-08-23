@@ -158,3 +158,4 @@ src/Razor/benchmarks/testapps/ComponentApp/Components/Pages/Generated.razor
 
 **/appsettings.json
 **/Migrations
+**/wwwroot/uploads

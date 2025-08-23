@@ -3,25 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogPost.Pages.Tag
+namespace BlogPost.Pages.Post
 {
     public class IndexModel(AppDbContext _db) : PageModel
     {
-        public IEnumerable<TagEntity> Tags {get;set;}
+        public IEnumerable<PostEntity> Posts {get;set;}
 
         [BindProperty]
         public string SearchText {get;set;}
 
         public async Task OnGet()
         {
-            Tags = await _db.Tags.ToListAsync();
+            Posts = await _db.Posts
+                .Include(p => p.Category)
+                .Include(p => p.Tags)
+                .ToListAsync();
         }
 
-        // delete
+        // delete 
         public async Task<IActionResult> OnPost(int id)
         {
-            var matchingTag = await _db.Tags.FindAsync(id);
-            _db.Tags.Remove(matchingTag);
+            var matchingPost = await _db.Posts.FindAsync(id);
+            _db.Posts.Remove(matchingPost);
             await _db.SaveChangesAsync();
 
             return RedirectToPage();
@@ -35,7 +38,10 @@ namespace BlogPost.Pages.Tag
                 return RedirectToPage();
             }
 
-            Tags = await _db.Tags.Where(t => t.Name.Contains(SearchText)).ToListAsync();
+            Posts = await _db.Posts
+                .Include(p => p.Category)
+                .Include(p => p.Tags)
+                .Where(p => p.Title.Contains(SearchText)).ToListAsync();
 
             return Page();
         }

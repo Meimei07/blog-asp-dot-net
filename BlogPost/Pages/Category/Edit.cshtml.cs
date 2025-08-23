@@ -16,7 +16,9 @@ namespace BlogPost.Pages.Category
 
         public async Task<IActionResult> OnPost()
         {
-            if(ModelState.IsValid)
+            ModelState.Remove("Category.Posts");
+
+            if (ModelState.IsValid)
             {
                 var matchingCategory = await _db.Categories.FindAsync(Category.Id);
                 matchingCategory.Name = Category.Name;

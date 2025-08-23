@@ -1,0 +1,134 @@
+﻿@page
+@model BlogPost.Pages.Post.EditModel
+@{
+    ViewData["Title"] = "Edit Post";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="d-flex justify-content-between mb-2">
+            <h3>Edit Post</h3>
+            <a class="btn btn-success" asp-page="/Post/Index" role="button">Back</a>
+        </div>
+        <!-- Blog entries-->
+        <div class="col-lg-12">
+            <div class="card p-3">
+                <div asp-validation-summary="All"></div>
+
+                <!-- enctype="" for file input -->
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Post.Id" />
+
+                    @* Title *@
+                    <div class="mb-3">
+                        <label asp-for="Post.Title" class="form-label">Title</label>
+                        <input type="text"
+                               class="form-control"
+                               asp-for="Post.Title" />
+                        <span asp-validation-for="Post.Title"></span>
+                    </div>
+
+                    @* Content *@
+                    <div class="mb-3">
+                        <label asp-for="Post.Content" class="form-label">Content</label>
+                        <textarea class="form-control"
+                                  asp-for="Post.Content"
+                                  rows="5">
+                        </textarea>
+                        <span asp-validation-for="Post.Content"></span>
+                    </div>
+
+                    @* Thumbnail *@
+                    <div class="mb-3">
+                        <label class="form-label">Chosen Thumbnail: @(!string.IsNullOrEmpty(Model.Thumbnail) ? Model.Thumbnail : "No chosen image!")</label>
+                        <div class="d-flex justify-content-between gap-3">
+                            <input class="input-image form-control"
+                                   type="file"
+                                   asp-for="Post.ImgFile" />
+                            <button class="clear-btn btn btn-dark btn-sm">Clear</button>
+                        </div>
+                        <div class="thumbnail-container mt-2">
+                            @if (Model.Post.ImgFile != null || !string.IsNullOrEmpty(Model.Post.Thumbnail))
+                            {
+                                <img style="width: 200px;" src="~/uploads/@Model.Post.Thumbnail" alt="current-image" />
+                            }
+                            else
+                            {
+                                <img style="display: none; width: 200px; " />
+                            }
+                        </div>
+
+                        <span asp-validation-for="Post.ImgFile"></span>
+                    </div>
+
+                    @* category *@
+                    <div class="mb-3">
+                        <label asp-for="SelectedCategory" class="form-label">Category</label>
+                        <select class="form-select"
+                                asp-for="SelectedCategory"
+                                asp-items="Model.CategoryItems"
+                                aria-label="Default select example">
+                            <option selected>Select Category</option>
+                        </select>
+                    </div>
+
+                    @* tag *@
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tag</label>
+                        <div class="tag-wrapper">
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="selectedTags"
+                                           value="@tag.Id"
+                                           id="tag-@tag.Id"
+                                           @(Model.SelectedTags.Contains(tag.Id) ? "checked" : "") />
+                                    <label class="form-check-label" for="tag-@tag.Id">@tag.Name</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+        const imageEl = document.querySelector(".thumbnail-container img");
+        const inputImgEl = document.querySelector(".input-image");
+
+        // change image according to file selection
+        inputImgEl.addEventListener("change", (event) => {
+            let filePath = event.target.files[0];
+            console.log(filePath);
+            imageEl.src = URL.createObjectURL(filePath);
+            imageEl.style.display = "block";
+        })
+
+        document.querySelector(".clear-btn").addEventListener("click", (event) => {
+            event.preventDefault();
+
+            // clear image selection input
+            inputImgEl.value = "";
+
+            // convert to javascript string
+            const thumbnail = "@(Model.Post.Thumbnail ?? "")";
+
+            if(thumbnail) {
+                // show old image, if exist
+                imageEl.src = `/uploads/${thumbnail}`;
+            } else {
+                // show nothing, if no old image
+                imageEl.style.display = "none";
+            }
+        });
+
+    </script>
+}

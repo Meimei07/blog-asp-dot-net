@@ -16,7 +16,9 @@ namespace BlogPost.Pages.Tag
 
         public async Task<IActionResult> OnPost()
         {
-            if(ModelState.IsValid)
+            ModelState.Remove("Tag.Posts");
+
+            if (ModelState.IsValid)
             {
                 var matchingTag = await _db.Tags.FindAsync(Tag.Id);
                 matchingTag.Name = Tag.Name;
