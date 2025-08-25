@@ -1,0 +1,96 @@
+﻿@page
+@model BlogPost.Pages.Post.DetailModel
+@{
+    ViewData["Title"] = "Post Detail";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Post content-->
+            <article>
+                <!-- Post header-->
+                <header class="mb-4">
+                    <!-- Post title-->
+                    <h1 class="fw-bolder mb-1">@Model.Post.Title</h1>
+                    <!-- Post meta content-->
+                    <div class="text-muted fst-italic mb-2">
+                        Posted on August 23st, 2025
+                    </div>
+                    <!-- Post category-->
+                    <a class="badge bg-secondary text-decoration-none link-light"
+                       href="#!">@Model.Post.Category.Name</a>
+                    <!-- Post tags -->
+                    @foreach (var tag in Model.Post.Tags)
+                    {
+                        <a class="badge bg-secondary text-decoration-none link-light"
+                           href="#!">@tag.Name</a>
+                    }
+                </header>
+                <!-- Preview image figure-->
+                <figure class="mb-4 ratio ratio-16x9 ">
+                    @if (!string.IsNullOrEmpty(Model.Post.Thumbnail))
+                    {
+                        <img class="img-fluid rounded object-fit-cover"
+                             src="~/uploads/@Model.Post.Thumbnail"
+                             alt="thumbnail" />
+                    }
+                    else
+                    {
+                        <img class="img-fluid rounded object-fit-cover"
+                             src="~/uploads/no-image.jpeg"
+                             alt="no image" />
+                    }
+                </figure>
+                <!-- Post content-->
+                <section class="mb-5">
+                    <p class="fs-5 mb-4">
+                        @Model.Post.Content
+                    </p>
+            </article>
+        </div>
+        <!-- Side widgets-->
+        <div class="col-lg-4">
+            <!-- Search widget-->
+            <div class="card mb-4">
+                <div class="card-header">Search</div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input class="form-control"
+                               type="text"
+                               placeholder="Enter search term..."
+                               aria-label="Enter search term..."
+                               aria-describedby="button-search" />
+                        <button class="btn btn-primary"
+                                id="button-search"
+                                type="button">
+                            Go!
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Tags widget-->
+            <div class="card mb-4">
+                <div class="card-header">Tags</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">Web Design</a></li>
+                                <li><a href="#!">HTML</a></li>
+                                <li><a href="#!">Freebies</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6">
+                            <ul class="list-unstyled mb-0">
+                                <li><a href="#!">JavaScript</a></li>
+                                <li><a href="#!">CSS</a></li>
+                                <li><a href="#!">Tutorials</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

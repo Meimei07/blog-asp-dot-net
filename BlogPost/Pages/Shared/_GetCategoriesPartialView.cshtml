@@ -1,0 +1,14 @@
+﻿@using BlogPost.Models;
+
+@inject AppDbContext _db;
+
+@{
+    IEnumerable<CategoryEntity> Categories = _db.Categories.ToList();
+}
+
+@foreach(var category in Categories)
+{
+    <li class="nav-item">
+        <a asp-page="/Category/Detail" asp-route-id="@category.Id" class="nav-link">@category.Name</a>
+    </li>
+}

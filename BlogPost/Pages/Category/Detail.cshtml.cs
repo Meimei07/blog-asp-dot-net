@@ -3,26 +3,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlogPost.Pages
+namespace BlogPost.Pages.Category
 {
-    public class IndexModel : PageModel
+    public class DetailModel(AppDbContext _db) : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-        private readonly AppDbContext _db;
-
+        [BindProperty]
         public IEnumerable<PostEntity> Posts {get;set;}
 
-        public IndexModel(ILogger<IndexModel> logger, AppDbContext db)
-        {
-            _logger = logger;
-            _db = db;
-        }
-
-        public async Task OnGet()
+        public async Task OnGet(int id) // category id
         {
             Posts = await _db.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Tags)
+                .Where(p => p.CategoryEntityId == id)
                 .ToListAsync();
         }
     }
