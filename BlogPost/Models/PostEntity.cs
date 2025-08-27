@@ -23,5 +23,11 @@ namespace BlogPost.Models
 
         [NotMapped]
         public IFormFile ImgFile {get;set;}
+
+        // one to many
+        public string UserId {get;set;}
+
+        // navigation
+        public AppUser User {get;set;}
     }
 }

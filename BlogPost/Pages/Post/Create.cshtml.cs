@@ -1,4 +1,6 @@
 using BlogPost.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogPost.Pages.Post
 {
-    public class CreateModel(AppDbContext _db, IWebHostEnvironment _environment) : PageModel
+    [Authorize]
+    public class CreateModel(AppDbContext _db, IWebHostEnvironment _environment, UserManager<AppUser> _userManager) : PageModel
     {
         [BindProperty]
         public PostEntity Post {get;set;}
@@ -33,9 +36,13 @@ namespace BlogPost.Pages.Post
             ModelState.Remove("Post.Category");
             ModelState.Remove("Post.Tags");
             ModelState.Remove("Post.ImgFile");
+            ModelState.Remove("Post.UserId");
+            ModelState.Remove("Post.User");
 
             if (ModelState.IsValid)
             {
+                var user = await GetAuthUser();
+
                 string imgName = "";
 
                 // handle image upload
@@ -64,17 +71,20 @@ namespace BlogPost.Pages.Post
 
                 Post.Thumbnail = imgName;
 
-                // one to many
+                // one to many : category < post
                 var category = await _db.Categories.Include(c => c.Posts).FirstAsync(c => c.Id == SelectedCategory);
                 category.Posts.Add(Post);
 
-                // many to many
+                // many to many : tag <> post
                 Post.Tags = [];
                 foreach(var selectedTag in SelectedTags)
                 {
                     var tag = await _db.Tags.FirstAsync(t => t.Id == selectedTag);
                     Post.Tags.Add(tag);
                 }
+
+                // assign auth user id to current post
+                Post.UserId = user.Id.ToString();
 
                 _db.Posts.Add(Post);
                 await _db.SaveChangesAsync();
@@ -84,6 +94,11 @@ namespace BlogPost.Pages.Post
 
             await OnGet();
             return Page();
+        }
+
+        private Task<AppUser> GetAuthUser()
+        {
+            return _userManager.GetUserAsync(User);
         }
     }
 }

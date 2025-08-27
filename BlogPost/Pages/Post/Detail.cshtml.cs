@@ -1,10 +1,12 @@
 using BlogPost.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogPost.Pages.Post
 {
+    [Authorize]
     public class DetailModel(AppDbContext _db) : PageModel
     {
         [BindProperty]

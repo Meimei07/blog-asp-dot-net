@@ -1,4 +1,6 @@
 using BlogPost.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -6,7 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogPost.Pages.Post
 {
-    public class EditModel(AppDbContext _db, IWebHostEnvironment _environment) : PageModel
+    [Authorize]
+    public class EditModel(AppDbContext _db, IWebHostEnvironment _environment, UserManager<AppUser> _userManager) : PageModel
     {
         [BindProperty]
         public PostEntity Post {get;set;}
@@ -21,18 +24,26 @@ namespace BlogPost.Pages.Post
 
         public string Thumbnail {get;set;}
 
-        public async Task OnGet(int id)
+        public async Task<IActionResult> OnGet(int id)
         {
             Post = await _db.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Tags).
                 FirstAsync(p => p.Id == id);
 
+            var user = await GetAuthUser();
+
+            // make sure user can only edit their own posts
+            // if try to edit other posts, redirect to access denied page
+            if (user.Id.ToString() != Post.UserId)
+                return RedirectToPage("/AccessDenied");
+
             SelectedCategory = Post.CategoryEntityId;
             SelectedTags = Post.Tags.Select(t => t.Id).ToList();
 
             if(!string.IsNullOrEmpty(Post.Thumbnail))
             {
+                // getting filename.ext
                 string[] filename = Post.Thumbnail.Split('_', ',');
                 string extension = filename[1].Split('.', ',')[1];
                 Thumbnail = $"{filename[0]}.{extension}";
@@ -42,6 +53,8 @@ namespace BlogPost.Pages.Post
             CategoryItems = new SelectList(categories, "Id", "Name");
 
             Tags = await _db.Tags.ToListAsync();
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost()
@@ -50,6 +63,8 @@ namespace BlogPost.Pages.Post
             ModelState.Remove("Post.Tags");
             ModelState.Remove("Post.Thumbnail");
             ModelState.Remove("Post.ImgFile");
+            ModelState.Remove("Post.UserId");
+            ModelState.Remove("Post.User");
 
             if (ModelState.IsValid)
             {
@@ -122,6 +137,11 @@ namespace BlogPost.Pages.Post
 
             await OnGet(Post.Id);
             return Page();
+        }
+
+        private Task<AppUser> GetAuthUser()
+        {
+            return _userManager.GetUserAsync(User);
         }
     }
 }

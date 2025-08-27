@@ -18,6 +18,7 @@
                 <!-- enctype="" for file input -->
                 <form method="POST" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Post.Id" />
+                    <input type="hidden" asp-for="Post.UserId"/>
 
                     @* Title *@
                     <div class="mb-3">
