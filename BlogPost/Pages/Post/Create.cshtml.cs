@@ -24,7 +24,12 @@ namespace BlogPost.Pages.Post
 
         public async Task OnGet()
         {
-            var categories = await _db.Categories.ToListAsync();
+            var user = await GetAuthUser();
+
+            // auth user can create post with their own categories
+            var categories = await _db.Categories
+                .Where(c => c.UserId == user.Id)
+                .ToListAsync();
             CategoryItems = new SelectList(categories, "Id", "Name");
 
             Tags = await _db.Tags.ToListAsync();

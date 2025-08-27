@@ -7,5 +7,11 @@
 
         // navigation one to many
         public ICollection<PostEntity> Posts {get;set;}
+
+        // one to many
+        public string? UserId { get; set; }
+
+        // navigation
+        public AppUser User { get; set; }
     }
 }

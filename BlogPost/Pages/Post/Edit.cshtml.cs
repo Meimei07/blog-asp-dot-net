@@ -49,7 +49,10 @@ namespace BlogPost.Pages.Post
                 Thumbnail = $"{filename[0]}.{extension}";
             }
 
-            var categories = await _db.Categories.ToListAsync();
+            // auth user can edit post with their own categories
+            var categories = await _db.Categories
+               .Where(c => c.UserId == user.Id)
+               .ToListAsync();
             CategoryItems = new SelectList(categories, "Id", "Name");
 
             Tags = await _db.Tags.ToListAsync();
