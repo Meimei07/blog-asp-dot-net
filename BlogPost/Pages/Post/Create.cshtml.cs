@@ -32,7 +32,10 @@ namespace BlogPost.Pages.Post
                 .ToListAsync();
             CategoryItems = new SelectList(categories, "Id", "Name");
 
-            Tags = await _db.Tags.ToListAsync();
+            // auth user can create post with their own tags
+            Tags = await _db.Tags
+                .Where(t => t.UserId == user.Id)
+                .ToListAsync();
         }
 
         public async Task<IActionResult> OnPost()

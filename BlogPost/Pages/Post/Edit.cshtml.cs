@@ -55,7 +55,10 @@ namespace BlogPost.Pages.Post
                .ToListAsync();
             CategoryItems = new SelectList(categories, "Id", "Name");
 
-            Tags = await _db.Tags.ToListAsync();
+            // auth user can edit post with their own tags
+            Tags = await _db.Tags
+                .Where(t => t.UserId == user.Id)
+                .ToListAsync();
 
             return Page();
         }

@@ -10,5 +10,6 @@ namespace BlogPost.Models
         // navigations
         public ICollection<PostEntity> Posts {get;set;}
         public ICollection<CategoryEntity> Categories {get;set;}
+        public ICollection<TagEntity> Tags {get;set;}
     }
 }
