@@ -13,9 +13,9 @@
                 <header class="mb-4">
                     <!-- Post title-->
                     <h1 class="fw-bolder mb-1">@Model.Post.Title</h1>
-                    <!-- Post meta content-->
+                    <!-- Post owner -->
                     <div class="text-muted fst-italic mb-2">
-                        Posted on August 23st, 2025
+                        Posted by @Model.Post.User.UserName
                     </div>
                     <!-- Post category-->
                     <a class="badge bg-secondary text-decoration-none link-light"
@@ -74,20 +74,14 @@
                 <div class="card-header">Tags</div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">Web Design</a></li>
-                                <li><a href="#!">HTML</a></li>
-                                <li><a href="#!">Freebies</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-sm-6">
-                            <ul class="list-unstyled mb-0">
-                                <li><a href="#!">JavaScript</a></li>
-                                <li><a href="#!">CSS</a></li>
-                                <li><a href="#!">Tutorials</a></li>
-                            </ul>
-                        </div>
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <div class="col-sm-6">
+                                <ul class="list-unstyled mb-0">
+                                    <li><a asp-page="/Tag/Detail" asp-route-id="@tag.Id">@tag.Name</a></li>
+                                </ul>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

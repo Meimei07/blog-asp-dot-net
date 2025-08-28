@@ -1,7 +1,7 @@
 ﻿@page
-@model BlogPost.Pages.Category.DetailModel
+@model BlogPost.Pages.Tag.DetailModel
 @{
-    ViewData["Title"] = "Category Detail";
+    ViewData["Title"] = "Tag Detail";
 }
 
 <div class="container mt-5">
@@ -135,9 +135,12 @@
                         {
                             <div class="col-sm-6">
                                 <ul class="list-unstyled mb-0">
-                                    <li><a asp-page="/Tag/Detail" asp-route-id="@tag.Id">@tag.Name</a></li>
+                                    <li>
+                                        <a asp-page="/Tag/Detail" asp-route-id="@tag.Id">
+                                        @tag.Name</a>
+                                    </li>
                                 </ul>
-                            </div>                           
+                            </div>
                         }
                     </div>
                 </div>
@@ -145,4 +148,3 @@
         </div>
     </div>
 </div>
-

@@ -11,14 +11,18 @@ namespace BlogPost.Pages.Category
     {
         [BindProperty]
         public IEnumerable<PostEntity> Posts {get;set;}
+        public IEnumerable<TagEntity> Tags {get;set;}
 
         public async Task OnGet(int id) // category id
         {
             Posts = await _db.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Tags)
+                .Include(p => p.User)
                 .Where(p => p.CategoryEntityId == id)
                 .ToListAsync();
+
+            Tags = await _db.Tags.ToListAsync();
         }
     }
 }
