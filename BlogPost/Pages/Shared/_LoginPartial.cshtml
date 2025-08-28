@@ -3,12 +3,50 @@
 
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
+@inject AppDbContext _db;
+
+@{
+    IEnumerable<CategoryEntity> Categories = _db.Categories.ToList();
+}
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     // categories
-    <partial name="_GetCategoriesPartialView"></partial>
+    if(Categories.Count() > 4)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Category
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @foreach(var category in Categories)
+                {
+                    <li>
+                        <a class="dropdown-item" 
+                            asp-page="/Category/Detail" 
+                            asp-route-id="@category.Id">
+                            @category.Name
+                        </a>
+                    </li>                        
+                }
+            </ul>
+        </li>        
+    } 
+    else
+    {
+        @foreach(var category in Categories)
+        {
+            <li class="nav-item">
+                <a asp-page="/Category/Detail" asp-route-id="@category.Id" class="nav-link">@category.Name</a>
+            </li>
+        }        
+    }
                         
     // manage
     <li class="nav-item dropdown">
